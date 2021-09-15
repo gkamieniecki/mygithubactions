@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - 'dev-*'
-      # - 'stage-*'
-      # - 'prod-*'
-      # - 'main'
+      - 'stage-*'
+      - 'prod-*'
+      - 'main'
 
 jobs:
   deploy_dev:
