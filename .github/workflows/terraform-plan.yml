@@ -23,7 +23,7 @@ jobs:
         run: echo running on branch ${GITHUB_REF##*/}
 
       - name: test
-        run: echo ${GITHUB_HEAD_REF}
+        run: echo ${{ github._ref }}
 
       - name: Terraform Format
         id: fmt
