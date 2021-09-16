@@ -15,22 +15,9 @@ jobs:
     environment: dev
     if: startsWith('refs/heads/dev-', ${{ github._ref }})
     # github.ref == 'refs/heads/dev-*'
-    # env:
-    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-    # defaults:
-    #   run:
-    #     shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-        # terraform_version: 0.13.0
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
         id: fmt
@@ -40,49 +27,11 @@ jobs:
         id: init
         run: echo "terraform init"
 
-      - name: Terraform Validate
-        id: validate
-        run: echo "terraform validate"
-
       - name: Terraform Plan
         id: plan
         run: terraform -chdir=terraform/environment/dev plan
         continue-on-error: true
 
-      - name: Update Pull Request
-        uses: actions/github-script@0.9.0
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: echo "exit 1"
-      
       - name: Terraform Apply
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/dev apply -auto-approve"
@@ -92,22 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: stage
     if: startsWith('refs/heads/stage-', ${{ github.ref }})
-    # env:
-    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-    # defaults:
-    #   run:
-    #     shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-        # terraform_version: 0.13.0
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
         id: fmt
@@ -117,49 +53,11 @@ jobs:
         id: init
         run: echo "terraform init"
 
-      - name: Terraform Validate
-        id: validate
-        run: echo "terraform validate"
-
       - name: Terraform Plan
         id: plan
         run: echo "terraform -chdir=terraform/environment/stage plan"
         continue-on-error: true
 
-      - name: Update Pull Request
-        uses: actions/github-script@0.9.0
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: echo "exit 1"
-      
       - name: Terraform Apply
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/stage apply -auto-approve"
@@ -168,23 +66,10 @@ jobs:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: ${{ startsWith('refs/heads/prod-*', github.ref) }}
-    # env:
-    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-    # defaults:
-    #   run:
-    #     shell: bash
+    if: startsWith('refs/heads/prod-*', ${{ github.ref) }})
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-        # terraform_version: 0.13.0
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
         id: fmt
@@ -194,49 +79,11 @@ jobs:
         id: init
         run: echo "terraform init"
 
-      - name: Terraform Validate
-        id: validate
-        run: echo "terraform validate"
-
       - name: Terraform Plan
         id: plan
         run: echo "terraform -chdir=terraform/environment/prod plan"
         continue-on-error: true
 
-      - name: Update Pull Request
-        uses: actions/github-script@0.9.0
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: echo "exit 1"
-      
       - name: Terraform Apply
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/prod apply -auto-approve"
