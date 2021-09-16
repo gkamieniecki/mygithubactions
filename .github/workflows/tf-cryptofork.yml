@@ -13,7 +13,7 @@ jobs:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith('refs/heads/dev-', github.ref
+    if: startsWith('refs/heads/dev-', ${{ github.head_ref }})
     # github.ref == 'refs/heads/dev-*'
     # env:
     #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
