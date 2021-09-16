@@ -22,6 +22,9 @@ jobs:
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
 
+      - name: test
+        run: echo ${{ github._ref }}
+
       - name: Terraform Format
         id: fmt
         run: echo "terraform fmt"
@@ -71,7 +74,7 @@ jobs:
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
-        run: exit 1
+        run: echo "exit 1"
       
       - name: Terraform Apply
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
