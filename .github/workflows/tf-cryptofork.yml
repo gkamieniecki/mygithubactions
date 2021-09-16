@@ -18,6 +18,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Terraform Format
         id: fmt
         run: echo "terraform -chdir=terraform/environment/dev fmt -check"
