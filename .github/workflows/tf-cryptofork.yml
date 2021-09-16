@@ -65,7 +65,7 @@ jobs:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith('refs/heads/prod-*', ${{ github.ref }})
+    if: startsWith('refs/heads/prod-', ${{ github.ref }})
     steps:
       - name: Checkout
         uses: actions/checkout@v2
