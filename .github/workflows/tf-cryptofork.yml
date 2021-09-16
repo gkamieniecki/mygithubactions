@@ -13,7 +13,7 @@ jobs:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith('refs/heads/dev-', ${{ github.ref }})
+    if: startsWith(${{ github.ref }}, 'refs/heads/dev-')
     # github.ref == 'refs/heads/dev-*'
     steps:
       - name: Checkout
@@ -43,7 +43,7 @@ jobs:
     name: 'Deploy Infra - STAGE '
     runs-on: ubuntu-latest
     environment: stage
-    if: startsWith('refs/heads/stage-', ${{ github.ref }})
+    if: startsWith(${{ github.ref }}, 'refs/heads/stage-')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -69,7 +69,7 @@ jobs:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith('refs/heads/prod-', ${{ github.ref }})
+    if: startsWith(${{ github.ref }}, 'refs/heads/prod-')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
