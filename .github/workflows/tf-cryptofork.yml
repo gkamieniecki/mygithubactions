@@ -1,4 +1,4 @@
-name: 'Cryptofork Infra Deploy '
+name: 'Cryptofork Infra Deploy'
 
 on:
   push:
