@@ -13,12 +13,11 @@ jobs:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith('refs/heads/dev-', ${{ github._ref }})
+    if: startsWith('refs/heads/dev-', ${{ github.ref }})
     # github.ref == 'refs/heads/dev-*'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Terraform Format
         id: fmt
         run: echo "terraform -chdir=terraform/environment/dev fmt -check"
@@ -66,7 +65,7 @@ jobs:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith('refs/heads/prod-*', ${{ github.ref) }})
+    if: startsWith('refs/heads/prod-*', ${{ github.ref }})
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -87,8 +86,3 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/prod apply -auto-approve"
-
-
-
-
-#  
