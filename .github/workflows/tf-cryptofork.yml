@@ -6,11 +6,11 @@ on:
       - 'dev-*'
       - 'stage-*'
       - 'prod-*'
-      - 'main'
+  
   pull_request:
     branches:
       - main
-    types: [closed]
+    types: [ closed ]
 
 jobs:
   deploy_dev:
