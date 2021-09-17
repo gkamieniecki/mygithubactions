@@ -17,14 +17,14 @@ jobs:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.head_ref, 'refs/heads/dev-') && github.event.pull_request.merged == true
+    if: startsWith(github.ref, 'refs/heads/dev-') || github.event.pull_request.merged == true
     # github.ref == 'refs/heads/dev-*'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       
       - name: print value
-        run: echo ${{ github.ref }}
+        run: echo ${{ github.head_ref }}
 
       - name: Terraform Format
         id: fmt
