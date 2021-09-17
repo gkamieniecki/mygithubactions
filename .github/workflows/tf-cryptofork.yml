@@ -17,7 +17,7 @@ jobs:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith(github.ref, 'refs/heads/dev-') || github.event.pull_request.merged == true
+    if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.ref, 'refs/heads/dev-') && github.event.pull_request.merged == true
     # github.ref == 'refs/heads/dev-*'
     steps:
       - name: Checkout
@@ -36,8 +36,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform -chdir=terraform/environment/dev plan
-        continue-on-error: true
+        run: echo "terraform -chdir=terraform/environment/dev plan"
 
       - name: Terraform Apply
         if: github.event.pull_request.merged == true
@@ -47,7 +46,7 @@ jobs:
     name: 'Deploy Infra - STAGE '
     runs-on: ubuntu-latest
     environment: stage
-    if: startsWith(github.ref , 'refs/heads/stage-')
+    if: startsWith(github.ref , 'refs/heads/stage-') || startsWith(github.ref , 'refs/heads/stage-') && github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -63,7 +62,6 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: echo "terraform -chdir=terraform/environment/stage plan"
-        continue-on-error: true
 
       - name: Terraform Apply
         if: github.event.pull_request.merged == true
@@ -73,7 +71,7 @@ jobs:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith(github.ref , 'refs/heads/prod-') || github.event.pull_request.merged == true
+    if: startsWith(github.ref , 'refs/heads/prod-') || startsWith(github.ref , 'refs/heads/prod-') && github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -89,7 +87,6 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: echo "terraform -chdir=terraform/environment/prod plan"
-        continue-on-error: true
 
       - name: Terraform Apply
         if: github.event.pull_request.merged == true
