@@ -17,7 +17,7 @@ jobs:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith(github.ref, 'refs/heads/dev-') || startsWith(github.head_ref, 'refs/heads/dev-') && github.event.pull_request.merged == true
+    if: startsWith(github.ref, 'refs/heads/dev-')
     # github.ref == 'refs/heads/dev-*'
     steps:
       - name: Checkout
@@ -39,14 +39,14 @@ jobs:
         run: echo "terraform -chdir=terraform/environment/dev plan"
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
+        #if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/dev apply -auto-approve"
 
   deploy_stage:
     name: 'Deploy Infra - STAGE '
     runs-on: ubuntu-latest
     environment: stage
-    if: startsWith(github.ref , 'refs/heads/stage-') || startsWith(github.head_ref , 'refs/heads/stage-') && github.event.pull_request.merged == true
+    if: startsWith(github.ref , 'refs/heads/stage-')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -64,14 +64,14 @@ jobs:
         run: echo "terraform -chdir=terraform/environment/stage plan"
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
+        #if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/stage apply -auto-approve"
 
   deploy_prod:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith(github.ref , 'refs/heads/prod-') || startsWith(github.head_ref , 'refs/heads/prod-') && github.event.pull_request.merged == true
+    if: startsWith(github.ref , 'refs/heads/prod-')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -89,7 +89,7 @@ jobs:
         run: echo "terraform -chdir=terraform/environment/prod plan"
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
+        #if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/prod apply -auto-approve"
 
   # main_apply:
