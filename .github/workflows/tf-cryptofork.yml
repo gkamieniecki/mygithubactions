@@ -98,7 +98,7 @@ jobs:
   main_apply:
     name: 'Terrafom Apply - MAIN'
     runs-on: ubuntu-latest
-    if: startsWith(github.ref , 'refs/heads/main') && github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
