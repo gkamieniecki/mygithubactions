@@ -73,7 +73,7 @@ jobs:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith(github.ref , 'refs/heads/prod-') || github.event.pull_request.merged == true
+    if: startsWith(github.ref , 'refs/heads/prod-')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
