@@ -1,4 +1,4 @@
-name: 'Cryptofork Infra Deploy '
+name: 'Cryptofork Infra Deploy'
 
 on:
   push:
@@ -6,18 +6,25 @@ on:
       - 'dev-*'
       - 'stage-*'
       - 'prod-*'
-      - 'main'
+  
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
 
 jobs:
   deploy_dev:
     name: 'Deploy Infra - DEV'
     runs-on: ubuntu-latest
     environment: dev
-    if: startsWith('refs/heads/dev-', ${{ github.ref }})
+    if: startsWith(github.ref, 'refs/heads/dev-') || github.event.pull_request.merged == true
     # github.ref == 'refs/heads/dev-*'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: print value
+        run: echo ${{ github.head_ref }}
 
       - name: Terraform Format
         id: fmt
@@ -29,18 +36,17 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform -chdir=terraform/environment/dev plan
-        continue-on-error: true
+        run: echo "terraform -chdir=terraform/environment/dev plan"
 
       - name: Terraform Apply
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/dev apply -auto-approve"
 
   deploy_stage:
     name: 'Deploy Infra - STAGE '
     runs-on: ubuntu-latest
     environment: stage
-    if: startsWith('refs/heads/stage-', ${{ github.ref }})
+    if: startsWith(github.ref , 'refs/heads/stage-') || startsWith(github.head_ref , 'refs/heads/stage-') && github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -56,17 +62,16 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: echo "terraform -chdir=terraform/environment/stage plan"
-        continue-on-error: true
 
       - name: Terraform Apply
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/stage apply -auto-approve"
 
   deploy_prod:
     name: 'Deploy Infra - PROD'
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith('refs/heads/prod-*', ${{ github.ref }})
+    if: startsWith(github.ref , 'refs/heads/prod-') || startsWith(github.head_ref , 'refs/heads/prod-') && github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -82,9 +87,32 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: echo "terraform -chdir=terraform/environment/prod plan"
-        continue-on-error: true
 
       - name: Terraform Apply
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/prod apply -auto-approve"
+
+  # main_apply:
+  #   name: 'Terrafom Apply - MAIN '
+  #   runs-on: ubuntu-latest
+  #   if: github.event.pull_request.merged == true
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Terraform Format
+  #       id: fmt
+  #       run: echo "terraform fmt -check"
+
+  #     - name: Terraform Init
+  #       id: init
+  #       run: echo "terraform init"
+
+  #     - name: Terraform Plan
+  #       id: plan
+  #       run: echo "terraform plan"
+  #       continue-on-error: true
+
+  #     - name: Terraform Apply
+  #       run: echo "terraform  apply -auto-approve"
 
