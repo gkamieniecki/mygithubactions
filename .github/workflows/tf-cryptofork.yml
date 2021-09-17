@@ -43,7 +43,6 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/dev apply -auto-approve"
 
   deploy_stage:
@@ -69,7 +68,6 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/stage apply -auto-approve"
 
   deploy_prod:
@@ -95,7 +93,6 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
         run: echo "terraform -chdir=terraform/environment/prod apply -auto-approve"
 
   main_apply:
