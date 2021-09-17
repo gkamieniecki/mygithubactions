@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v2
       
       - name: print value
-        run: echo ${{ github.ref }}
+        run: echo ${{ github.ref }} - ${{ github.base_ref }} - {{ github.head_ref }}
 
       - name: Terraform Format
         id: fmt
