@@ -93,7 +93,7 @@ jobs:
         run: echo "terraform -chdir=terraform/environment/prod apply -auto-approve"
 
   main_apply:
-    name: 'Terrafom Apply - MAIN'
+    name: 'Terrafom Apply - MAIN '
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
