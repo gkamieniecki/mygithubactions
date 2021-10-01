@@ -1,0 +1,40 @@
+name: 'Cryptofork Infra Deploy - DEV only'
+
+on:
+  push:
+    branches:
+      - 'dev-*'
+  
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+jobs:
+  deploy_dev:
+    name: 'Deploy Infra - DEV'
+    runs-on: ubuntu-latest
+    environment: dev
+    if: startsWith(github.ref, 'refs/heads/dev-') || github.event.pull_request.merged == true && startsWith(github.head_ref, 'dev-')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: print value
+        run: echo ${{ github.head_ref }}
+
+      - name: Terraform Format
+        id: fmt
+        run: echo "terraform -chdir=terraform/environment/dev fmt -check"
+
+      - name: Terraform Init
+        id: init
+        run: echo "terraform init"
+
+      - name: Terraform Plan
+        id: plan
+        run: echo "terraform -chdir=terraform/environment/dev plan"
+
+      - name: Terraform Apply
+        if: github.event.pull_request.merged == true
+        run: echo "terraform -chdir=terraform/environment/dev apply -auto-approve"
