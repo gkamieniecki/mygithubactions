@@ -12,7 +12,7 @@ on:
 
 jobs:
   deploy_dev:
-    name: 'Deploy Infra - DEV'
+    name: 'Deploy Infra - STAGE'
     runs-on: ubuntu-latest
     environment: dev
     if: startsWith(github.ref, 'refs/heads/dev-') || github.event.pull_request.merged == true && startsWith(github.head_ref, 'dev-')
@@ -20,16 +20,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: print value
-        run: echo ${{ github.head_ref }}
-
       - name: Terraform Format
         id: fmt
         run: echo "terraform -chdir=terraform/environment/dev fmt -check"
 
       - name: Terraform Init
         id: init
-        run: echo "terraform init"
+        run: echo "terraform init -chdir=terraform/environment/dev"
 
       - name: Terraform Plan
         id: plan
