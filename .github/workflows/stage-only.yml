@@ -1,0 +1,37 @@
+name: 'Cryptofork Infra Deploy - STAGE only'
+
+on:
+  push:
+    branches:
+      - 'stage-*'
+  
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+jobs:    
+  deploy_stage:
+    name: 'Deploy Infra - STAGE '
+    runs-on: ubuntu-latest
+    environment: stage
+    if: startsWith(github.ref , 'refs/heads/stage-') || github.event.pull_request.merged == true && startsWith(github.head_ref, 'stage-')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform Format
+        id: fmt
+        run: echo "terraform -chdir=terraform/environment/stage fmt -check"
+
+      - name: Terraform Init
+        id: init
+        run: echo "terraform -chdir=terraform/environment/stage init"
+
+      - name: Terraform Plan
+        id: plan
+        run: echo "terraform -chdir=terraform/environment/stage plan"
+
+      - name: Terraform Apply
+        if: github.event.pull_request.merged == true
+        run: echo "terraform -chdir=terraform/environment/stage apply -auto-approve"
